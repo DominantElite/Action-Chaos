@@ -218,6 +218,7 @@ int ABaseWeapon::GetMaxAmmo()
 void ABaseWeapon::OwnerDed()
 {
 	Alive = false;
+	Destroy();
 }
 
 bool ABaseWeapon::CanShoot() const

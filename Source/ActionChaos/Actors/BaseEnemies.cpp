@@ -4,11 +4,11 @@
 #include "../Actors/BaseEnemies.h"
 #include "BrainComponent.h"
 #include "AIController.h"
-#include "../ActionChaosGameModeBase.h"
 #include "../Utility/CharacterAnimation.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include <Kismet/GameplayStatics.h>
+#include <ActionChaos/ActionChaosGameModeBase.h>
 #include "../ActionChaos.h"
 
 ABaseEnemies::ABaseEnemies()
@@ -144,7 +144,6 @@ void ABaseEnemies::KillEnemy()
 {
 	if (GetMesh())
 	{
-		//GetMesh()->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
 		GetMesh()->SetSimulatePhysics(true);
 		UE_LOG(Game, Warning, TEXT("I am a ragdoll"));
 		GetMesh()->SetCollisionProfileName(TEXT("Ragdoll"));
@@ -154,6 +153,9 @@ void ABaseEnemies::KillEnemy()
 		UE_LOG(Game, Warning, TEXT("I am not a ragdoll"));
 		Destroy();
 	}
+
+	AActionChaosGameModeBase* OnEnemyDed = Cast<AActionChaosGameModeBase>(GetWorld()->GetAuthGameMode());
+	OnEnemyDed->OnDied.Broadcast(this);
 
 	//Destroy();
 }

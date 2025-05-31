@@ -7,6 +7,7 @@
 #include "ActionChaosGameModeBase.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FEnemyInfoVariable, AActor*, player);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FActorDestroyed, AActor*, actor);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FCurrencyUpdateVariable, int, currency);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FEnemyUpdateVariable, int, Destroyed, int, Max);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FWaveChangedVariable, int, Wave, int, MaxWaves);
@@ -42,6 +43,7 @@ public:
 	FWaveChangedVariable OnWaveChanged;
 	FCurrencyUpdateVariable OnCurrencyChanged;
 	FEnemyUpdateVariable OnEnemySpawned;
+	FActorDestroyed OnDied;
 
 	/// map settings variables
 	///////////////////////////////////////////////////

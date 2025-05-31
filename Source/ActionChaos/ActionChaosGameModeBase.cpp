@@ -6,6 +6,7 @@
 #include "Actors/GridNode.h"
 #include "Widgets/Results.h"
 #include "Actors/BasePlayer.h"
+#include "Actors/BaseEnemies.h"
 #include "Engine.h"
 #include "Actors/KitStation.h"
 #include "Actors/ShopStation.h"
@@ -1180,6 +1181,13 @@ void AActionChaosGameModeBase::ClearMap()
 		ABasePickup* Actor = *itr;
 		Actor->Destroy();
 	}
+
+	// Cleaning npcs bodies
+	for (TActorIterator<ABaseEnemies> itr(GetWorld()); itr; ++itr)
+	{
+		ABaseEnemies* Enemy = *itr;
+		Enemy->Destroy();
+	}
 }
 ///////////////////////////////////////////////////
 /// map setup functions
@@ -1189,7 +1197,14 @@ void AActionChaosGameModeBase::ClearMap()
 void AActionChaosGameModeBase::AddEnemy(AActor* enemyActor, int value)
 {
 	enemies.Add(enemyActor, value);
-	enemyActor->OnDestroyed.AddDynamic(this, &AActionChaosGameModeBase::RemoveEnemy);
+	OnDied.AddDynamic(this, &AActionChaosGameModeBase::RemoveEnemy);
+
+	// Disabled for another delegate
+	//            |
+	//            V
+	//enemyActor->OnDestroyed.AddDynamic(this, &AActionChaosGameModeBase::RemoveEnemy);
+	// 
+	// 
 	//we might need more functionality in here later so this function needs to be used
 }
 TArray<int> AActionChaosGameModeBase::GetCurrentWave()
@@ -1206,6 +1221,10 @@ void AActionChaosGameModeBase::RemoveCurrency(int amount)
 }
 void AActionChaosGameModeBase::RemoveEnemy(AActor* actor)
 {
+	if (!enemies.Find(actor))
+	{
+		return;
+	}
 	playerCurrency += enemies[actor];
 	OnCurrencyChanged.Broadcast(playerCurrency);
 	enemies.Remove(actor);

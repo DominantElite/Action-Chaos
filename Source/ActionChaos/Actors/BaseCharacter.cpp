@@ -4,6 +4,7 @@
 #include "BaseCharacter.h"
 #include "../ActionChaos.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Components/CapsuleComponent.h"
 #include "../Utility/CharacterAnimation.h"
 
 // Sets default values
@@ -18,7 +19,6 @@ ABaseCharacter::ABaseCharacter()
 
 	// Weapon and its placement
 	ChildActorComponent = CreateDefaultSubobject<UChildActorComponent>("ChildActorComponent");
-	//ChildActorComponent->SetupAttachment(GetMesh(), socketName);
 
 	// Armor
 	HeadChildActorComponent = CreateDefaultSubobject<UChildActorComponent>("HeadChildActorComponent");
@@ -204,20 +204,23 @@ void ABaseCharacter::HandleShields(float shield)
 
 void ABaseCharacter::HandleDeathStart(float health)
 {
-	Destroy(); // Temporary command
+	//Destroy(); // Temporary command
 
 	// Real stuff
-	//CharacterAnimation->DeadAnimation();
-	//if (GetCharacterMovement())
-	//{
-	//	GetCharacterMovement()->DisableMovement();
-	//}
-	//if (GetController())
-	//{
-	//	GetController()->Destroy();
-	//}
-	////SetActorEnableCollision(false);
-	//GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	//Weapon->OwnerDed();
+	CharacterAnimation->DeadAnimation();
+	if (GetCharacterMovement())
+	{
+		GetCharacterMovement()->DisableMovement();
+	}
+	if (GetController())
+	{
+		GetController()->Destroy();
+	}
+
+	GetMesh()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Ignore);
+
+	GetCapsuleComponent()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Ignore);
+
+	Weapon->OwnerDed();
 }
 
